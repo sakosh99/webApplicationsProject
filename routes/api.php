@@ -26,7 +26,7 @@ Route::group(['prefix' => 'user', 'controller' => AuthController::class], functi
 
 
 
-Route::group(['middleware' => ['auth:api']], function () {
+Route::group(['middleware' => 'auth:api'], function () {
 
     Route::group(['prefix' => 'user', 'controller' => AuthController::class], function () {
         Route::get('/profile',  'getUserProfile');
