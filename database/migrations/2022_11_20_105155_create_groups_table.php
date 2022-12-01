@@ -22,7 +22,7 @@ class CreateGroupsTable extends Migration
             $table->timestamps();
             $table->foreign('publisher_id')->references('id')->on('users')->onDelete('cascade');
         });
-        DB::table('users')->insert([
+        DB::table('groups')->insert([
             [
                 'id' => 1,
                 'group_name' => 'public',
