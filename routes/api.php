@@ -47,7 +47,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::post('/delete/{file_id}',  'delete');
         /////////////////get api's////////////////
-        // Route::get('/user-files',  'getAllUserFiles');
+        Route::get('/user-files',  'getAllUserFiles');
         Route::get('/group-files/{group_id}',  'getGroupFiles')->name('getGroupFiles');
     });
     Route::group(['prefix' => 'file', 'controller' => FileReportController::class], function () {
