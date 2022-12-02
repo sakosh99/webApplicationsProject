@@ -59,7 +59,21 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
-
+        'requests' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/requests.log'),
+            'level' => 'info',
+        ],
+        'responses' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/responses.log'),
+            'level' => 'info',
+        ],
+        'requestsIPs' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/requestsIPs.log'),
+            'level' => 'critical',
+        ],
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

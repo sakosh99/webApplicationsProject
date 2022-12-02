@@ -79,5 +79,6 @@ class Kernel extends HttpKernel
         'checkIfUserReservedFileBeforeAction' => \App\Http\Middleware\CheckIfUserReservedFileBeforeAction::class,
         'checkRole' => \App\Http\Middleware\CheckRole::class,
         'cors' => \App\Http\Middleware\Cors::class,
+        'apiLogging' => \App\Http\Middleware\ApiLogging::class,
     ];
 }
