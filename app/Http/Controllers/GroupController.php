@@ -56,8 +56,9 @@ class GroupController extends Controller
     public function addUserToGroup(AddUserToGroupRequest $request)
     {
         $group = $this->findByIdOrFail(Group::class, 'Group', $request->group_id);
-        $user = $this->findByIdOrFail(User::class, 'User', $request->user_id);
-
+        $user = User::where('email', $request->emailOrUserName)
+                ->orWhere('user_name', $request->emailOrUserName)
+                ->first();
         DB::beginTransaction();
         request()->transaction = true;
 

@@ -25,7 +25,7 @@ class AddUserToGroupRequest extends FormRequest
     {
         return [
             'group_id' => 'numeric|required',
-            'user_id'  => 'numeric|required',
+            'emailOrUserName'  => 'string|required',
         ];
     }
 }

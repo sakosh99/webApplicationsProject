@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Group;
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use App\Traits\ModelHelper;
@@ -21,12 +22,29 @@ class CheckUserInGroup
      */
     public function handle(Request $request, Closure $next, $type)
     {
+        $userByEmailOrUserName = null;
+        if (isset($request->emailOrUserName)) {
+            $userByEmailOrUserName = User::where('email', $request->emailOrUserName)
+                ->orWhere('user_name', $request->emailOrUserName)
+                ->first();
+            if (!$userByEmailOrUserName) {
+                throw new Exception(
+                    'User not found',
+                    404
+                );
+            }
+        }
+
         if (isset($request->group_id)) {
             $group = $this->findByIdOrFail(Group::class, 'Group', $request->group_id);
 
             $user_id = isset($request->user_id) ? $request->user_id : Auth::user()->id;
 
-            $user = $group->users->where('id', $user_id)->first();
+            if ($userByEmailOrUserName != null) {
+                $user = $group->users->where('id', $userByEmailOrUserName->id)->first();
+            } else {
+                $user = $group->users->where('id', $user_id)->first();
+            }
 
             if ($type == 'true') {
                 if ($user) {
