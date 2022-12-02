@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Traits\ModelHelper;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class CheckIfUserReservedFileBeforeAction
 {
@@ -21,6 +22,10 @@ class CheckIfUserReservedFileBeforeAction
     public function handle(Request $request, Closure $next)
     {
         $file = $this->findByIdOrFail(File::class, 'File', $request->file_id);
+
+        if ($file->publisher_id == Auth::user()->id && $file->group->group_type == 'private') {
+            return $next($request);
+        }
 
         if ($file->status == 'free' && $file->current_reserver_id == null) {
             throw new Exception(

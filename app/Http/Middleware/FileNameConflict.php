@@ -8,9 +8,11 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Traits\ModelHelper;
 use Exception;
+use App\Traits\FileUploader;
 
 class FileNameConflict
 {
+    use FileUploader;
     use ModelHelper;
     /**
      * Handle an incoming request.
@@ -23,19 +25,25 @@ class FileNameConflict
     {
 
 
+        $group = null;
+        $file = null;
+        if (isset(request()->file_id)) {
+            $file = $this->findByIdOrFail(File::class, 'File', request()->file_id);
+        }
         if (isset(request()->group_id)) {
             $group = $this->findByIdOrFail(Group::class, 'Group', request()->group_id);
-        } else {
-            $group = null;
+        } elseif (isset(request()->file_id) && !isset(request()->group_id)) {
+            $group = $this->findByIdOrFail(Group::class, 'Group', $file->group_id);
         }
 
-        if (isset(request()->file)) {
+
+        if (isset(request()->file) && isset(request()->group_id)) { //upload
             $file_name = request()->file->getClientOriginalName();
-        } elseif (isset(request()->file_id)) {
-            $file = $this->findByIdOrFail(File::class, 'File', request()->file_id);
+        } elseif (isset(request()->file_id) && isset(request()->group_id)) { //move or copy
             $file_name = $file->file_name;
-        } else {
-            $file_name = null;
+        } elseif (isset(request()->file_name) && isset(request()->file_id)) { //rename
+            $file_name = request()->file_name . '.' . $this->getFileExtension($file->file_path);
+            error_log($file_name);
         }
 
 

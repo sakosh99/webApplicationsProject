@@ -18,9 +18,9 @@ class GroupResource extends JsonResource
             'id'                            => $this->id,
             'group_name'                    => $this->group_name,
             'group_type'                    => $this->group_type,
-            'publisher_id'                  => $this->publisher->id,
-            'publisher_name'                => $this->publisher->full_name,
-            'publisher_userName'            => $this->publisher->user_name,
+            'publisher_id'                  => $this->publisher_id,
+            'publisher_userName'            => $this->publisher != null ? $this->publisher->user_name : null,
+            'publisher_name'                => $this->publisher != null ? $this->publisher->full_name : null,
         ];
     }
 }

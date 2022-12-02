@@ -36,7 +36,7 @@ class FileController extends Controller
 
         $this->middleware(['checkFileStatus', 'checkIfFileNameChanged', 'checkIfUserReservedFileBeforeAction'])->only('editFile');
 
-        $this->middleware(['checkFileStatus', 'checkFilePublisher', 'checkIfUserReservedFileBeforeAction'])->only('renameFile');
+        $this->middleware(['checkFileStatus', 'checkFilePublisher', 'checkIfUserReservedFileBeforeAction', 'fileNameConflict'])->only('renameFile');
 
         $this->middleware(['checkFilesStatus'])->only('reserveFiles');
 
