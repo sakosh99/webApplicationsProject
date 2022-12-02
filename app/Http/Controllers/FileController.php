@@ -12,8 +12,10 @@ use App\Http\Requests\ReserveFileRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
 use App\Models\Group;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class FileController extends Controller
@@ -276,10 +278,19 @@ class FileController extends Controller
 
     public function getGroupFiles($group_id)
     {
-        $files = Group::where('id', $group_id)->first()->files;
+        $group = Group::where('id', $group_id)->first();
+
+        $groupFiles = [];
+
+        if (Cache::has($group->name)) {
+            $groupFiles = Cache::get($group->name);
+        } else {
+            $groupFiles = $group->files;
+            Cache::add($group->name, $groupFiles, 60);
+        }
 
         return $this->successResponse(
-            FileResource::collection($files),
+            FileResource::collection($groupFiles),
             'Files fetched successfully',
         );
     }
