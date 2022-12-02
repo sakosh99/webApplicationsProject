@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\groups\LeftGroupRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Group;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Exception;
+
 
 class UserController extends Controller
 {
@@ -14,6 +14,9 @@ class UserController extends Controller
     {
         $this->middleware(['checkRole'])
             ->only('getAllUsers');
+
+        $this->middleware(['userHasPermissionOnGroup'])
+            ->only('getGroupUsers');
     }
 
     public function getAllUsers()
@@ -22,6 +25,22 @@ class UserController extends Controller
 
         return $this->successResponse(
             UserResource::collection($users),
+            'Users fetched successfully',
+        );
+    }
+
+    public function getGroupUsers($group_id)
+    {
+        $group = $this->findByIdOrFail(Group::class, 'Group', $group_id);
+
+        if ($group->group_type == 'public') {
+            throw new Exception(
+                'This group contains by default all users',
+                403
+            );
+        }
+        return $this->successResponse(
+            UserResource::collection($group->users),
             'Users fetched successfully',
         );
     }

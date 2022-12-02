@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Traits\FileUploader;
+use Illuminate\Support\Facades\Auth;
 
 class FileResource extends JsonResource
 {
@@ -16,10 +17,14 @@ class FileResource extends JsonResource
      */
     public function toArray($request)
     {
+        $filePath = $this->file_path;
+        if ($this->status == 'reserved' && $this->current_reserver_id != Auth::user()->id) {
+            $filePath = null;
+        }
         return [
             'id'                            => $this->id,
             'file_name'                     => $this->file_name,
-            'file_path'                     => $this->file_path,
+            'file_path'                     => $filePath,
             'file_extension'                => $this->getFileExtension($this->file_path),
             'status'                        => $this->status,
             'current_reserver_id'           => $this->currentReserver != null ? $this->currentReserver->id : null,
