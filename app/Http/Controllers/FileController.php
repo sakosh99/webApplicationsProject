@@ -282,11 +282,11 @@ class FileController extends Controller
 
         $groupFiles = [];
 
-        if (Cache::has($group->name)) {
-            $groupFiles = Cache::get($group->name);
+        if (Cache::has($group->group_name)) {
+            $groupFiles = Cache::get($group->group_name);
         } else {
             $groupFiles = $group->files;
-            Cache::add($group->name, $groupFiles, 60);
+            Cache::add($group->group_name, $groupFiles, 60);
         }
 
         return $this->successResponse(

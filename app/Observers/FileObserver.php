@@ -17,10 +17,10 @@ class FileObserver
     public function created(File $file)
     {
         $group  = $file->group;
-        if (Cache::has($group->name)) {
-            Cache::put($group->name, $group->files, 60);
+        if (Cache::has($group->group_name)) {
+            Cache::put($group->group_name, $group->files, 60);
         } else {
-            Cache::add($group->name, $group->files, 60);
+            Cache::add($group->group_name, $group->files, 60);
         }
     }
 
@@ -33,10 +33,10 @@ class FileObserver
     public function updated(File $file)
     {
         $group  = $file->group;
-        if (Cache::has($group->name)) {
-            Cache::put($group->name, $group->files, 60);
+        if (Cache::has($group->group_name)) {
+            Cache::put($group->group_name, $group->files, 60);
         } else {
-            Cache::add($group->name, $group->files, 60);
+            Cache::add($group->group_name, $group->files, 60);
         }
     }
 
@@ -49,10 +49,10 @@ class FileObserver
     public function deleted(File $file)
     {
         $group  = $file->group;
-        if (Cache::has($group->name)) {
-            Cache::put($group->name, $group->files, 60);
+        if (Cache::has($group->group_name)) {
+            Cache::put($group->group_name, $group->files, 60);
         } else {
-            Cache::add($group->name, $group->files, 60);
+            Cache::add($group->group_name, $group->files, 60);
         }
     }
 

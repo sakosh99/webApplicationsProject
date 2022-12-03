@@ -23,10 +23,9 @@ class FileNameConflict
      */
     public function handle(Request $request, Closure $next)
     {
-
-
         $group = null;
         $file = null;
+        $file_name = null;
         if (isset(request()->file_id)) {
             $file = $this->findByIdOrFail(File::class, 'File', request()->file_id);
         }
@@ -43,7 +42,6 @@ class FileNameConflict
             $file_name = $file->file_name;
         } elseif (isset(request()->file_name) && isset(request()->file_id)) { //rename
             $file_name = request()->file_name . '.' . $this->getFileExtension($file->file_path);
-            error_log($file_name);
         }
 
 
