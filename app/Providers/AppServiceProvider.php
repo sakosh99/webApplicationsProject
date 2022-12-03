@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Request as FacadesRequest;
+use Spatie\Health\Checks\Checks\CacheCheck;
+use Spatie\Health\Checks\Checks\DatabaseCheck;
+use Spatie\Health\Checks\Checks\DebugModeCheck;
+use Spatie\Health\Checks\Checks\EnvironmentCheck;
+use Spatie\Health\Checks\Checks\MeiliSearchCheck;
+use Spatie\Health\Checks\Checks\OptimizedAppCheck;
+use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
+use Spatie\Health\Facades\Health;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,5 +47,17 @@ class AppServiceProvider extends ServiceProvider
                 );
             }
         });
+
+        Health::checks([
+            // UsedDiskSpaceCheck::new()
+            //     ->warnWhenUsedSpaceIsAbovePercentage(70)
+            //     ->failWhenUsedSpaceIsAbovePercentage(90),
+            CacheCheck::new(),
+            DatabaseCheck::new(),
+            EnvironmentCheck::new(),
+            // DebugModeCheck::new(),
+            // OptimizedAppCheck::new(),
+            // MeiliSearchCheck::new()->url("http://localhost:8090/api/file/group-files/5"),
+        ]);
     }
 }
