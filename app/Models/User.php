@@ -24,7 +24,8 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'user_name',
         'password',
-        'role'
+        'role',
+        'subscription_plan_id'
     ];
 
     /**
@@ -97,5 +98,4 @@ class User extends Authenticatable implements JWTSubject
             ->where('publisher_id', Auth::user()->id)
             ->where('group_name', Auth::user()->user_name . '_storage');
     }
-
 }

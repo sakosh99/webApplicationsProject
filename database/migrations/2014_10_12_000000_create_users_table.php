@@ -22,7 +22,9 @@ class CreateUsersTable extends Migration
             $table->string('user_name')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'user']);
+            $table->unsignedBigInteger('subscription_plan_id');
             $table->timestamps();
+            $table->foreign('subscription_plan_id')->references('id')->on('subscriptions_plans');
         });
         DB::table('users')->insert([
             [
@@ -31,7 +33,8 @@ class CreateUsersTable extends Migration
                 'email' => 'admin@admin.com',
                 'user_name' => 'admin',
                 'password' => Hash::make('123456'),
-                'role' => 'Admin'
+                'role' => 'Admin',
+                'subscription_plan_id' => 1
             ],
         ]);
     }

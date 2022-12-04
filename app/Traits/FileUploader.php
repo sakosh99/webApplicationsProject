@@ -65,7 +65,7 @@ trait FileUploader
         if (!File::exists(public_path($realNewPath))) {
             File::makeDirectory(public_path($realNewPath), 0775, true);
         }
-        
+
         $fileName = Carbon::now()->format('Y_m_d_u') . '_' . $oldFileName;
 
         $fullPath = $realNewPath . $fileName;
@@ -109,5 +109,21 @@ trait FileUploader
         $infoPath = pathinfo(public_path($FilePath));
 
         return $infoPath['extension'];
+    }
+
+    protected function getFileSize($FilePath, $sizeType = 'B')
+    {
+        $fileSize = File::size(public_path($FilePath)); //in Byte
+        $newFileSize = 0;
+        if ($sizeType == 'KB') {
+            $newFileSize = $fileSize / 1024;
+        } elseif ($sizeType == 'M') {
+            $newFileSize = $fileSize / 1024 / 1024;
+        } elseif ($sizeType == 'G') {
+            $newFileSize = $fileSize / 1024 / 1024 / 1024;
+        } else {
+            $newFileSize = $fileSize;
+        }
+        return $newFileSize;
     }
 }

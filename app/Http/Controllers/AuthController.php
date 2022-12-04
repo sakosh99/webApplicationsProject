@@ -20,10 +20,11 @@ class AuthController extends Controller
         DB::beginTransaction();
         request()->transaction = true;
 
-        
-        $user = User::create(array_merge($request->validated(),[
+
+        $user = User::create(array_merge($request->validated(), [
             'password' => Hash::make($request->password),
-            'role' => 'user'
+            'role' => 'user',
+            'subscription_plan_id' => 1
         ]));
         // $user = User::create([
         //     ...$request->validated(),
