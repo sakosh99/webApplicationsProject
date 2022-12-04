@@ -98,4 +98,8 @@ class User extends Authenticatable implements JWTSubject
             ->where('publisher_id', Auth::user()->id)
             ->where('group_name', Auth::user()->user_name . '_storage');
     }
+    public function subscriptionPLan()
+    {
+        return $this->belongsTo(SubscriptionPLan::class, 'subscription_plan_id');
+    }
 }

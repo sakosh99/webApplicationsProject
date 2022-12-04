@@ -22,7 +22,7 @@ class FileController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['userHasPermissionOnGroup', 'fileNameConflict'])->only('upload');
+        $this->middleware(['userHasPermissionOnGroup', 'fileNameConflict', 'checkMemoryUsage'])->only('upload');
 
         $this->middleware([
             'userHasPermissionOnGroup', 'checkFilePublisher',
@@ -32,6 +32,7 @@ class FileController extends Controller
 
         $this->middleware([
             'userHasPermissionOnGroup',
+            'checkMemoryUsage',
             'checkFileStatus', 'fileNameConflict',
             'checkIfUserReservedFileBeforeAction'
         ])->only('copyFileToNewGroup');

@@ -80,5 +80,6 @@ class Kernel extends HttpKernel
         'checkRole' => \App\Http\Middleware\CheckRole::class,
         'cors' => \App\Http\Middleware\Cors::class,
         'apiLogging' => \App\Http\Middleware\ApiLogging::class,
+        'checkMemoryUsage' => \App\Http\Middleware\CheckMemoryUsage::class,
     ];
 }
