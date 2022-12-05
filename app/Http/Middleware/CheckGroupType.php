@@ -22,12 +22,20 @@ class CheckGroupType
     {
         $group = $this->findByIdOrFail(Group::class, 'Group', request()->group_id);
 
-        if ($group->group_type == 'private') {
+        if ($request->routeIs('groupUsers')) {
+            if ($group->group_type == 'public') {
+                throw new Exception(
+                    'This group contains by default all users',
+                    403
+                );
+            }
+        } elseif ($group->group_type == 'private') {
             throw new Exception(
                 'Failed, you can\'t add members to private group',
                 403
             );
         }
+
         return $next($request);
     }
 }

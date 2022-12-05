@@ -27,13 +27,15 @@ class CheckMemoryUsage
         $files = Auth::user()->files;
 
         $memoryUsage = 0;
+        $requestedFileSize = 0;
         foreach ($files as $file) {
             $memoryUsage = $memoryUsage + $this->getFileSize($file->file_path, 'M');
         }
 
         if (isset($request->file)) {
             $requestedFileSize = $request->file('file')->getSize() / 1024 / 1024;
-        } else {
+        }
+        if (isset($request->file_id)) {
             $file = $this->findByIdOrFail(File::class, 'File', $request->file_id);
             $requestedFileSize = $this->getFileSize($file->file_path, 'M');
         }
