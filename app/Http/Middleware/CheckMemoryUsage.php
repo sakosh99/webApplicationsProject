@@ -31,7 +31,7 @@ class CheckMemoryUsage
             $memoryUsage = $memoryUsage + $this->getFileSize($file->file_path, 'M');
         }
 
-        if ($request->file('file')) {
+        if (isset($request->file)) {
             $requestedFileSize = $request->file('file')->getSize() / 1024 / 1024;
         } else {
             $file = $this->findByIdOrFail(File::class, 'File', $request->file_id);
