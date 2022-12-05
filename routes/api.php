@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth:api', 'apiLogging']], function () {
     });
     Route::group(['prefix' => 'user', 'controller' => UserController::class], function () {
         Route::get('/all',  'getAllUsers');
-        Route::get('/group-users/{group_id}',  'getGroupUsers');
+        Route::get('/group-users/{group_id}',  'getGroupUsers')->name('groupUsers');
     });
     Route::group(['prefix' => 'file', 'controller' => FileController::class], function () {
         Route::post('/upload',  'upload');

@@ -119,7 +119,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY',base64_decode('Zy9/rFYf2/KtEMI6hCgmEjKVutE0fTsy+gZXmOhGBRQ=')),
+    'key' => env('APP_KEY', base64_decode('Zy9/rFYf2/KtEMI6hCgmEjKVutE0fTsy+gZXmOhGBRQ=')),
 
     'cipher' => 'AES-256-CBC',
 
@@ -174,7 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        App\Providers\RepositoryServiceProvider::class,
     ],
 
     /*

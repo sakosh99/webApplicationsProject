@@ -5,23 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\User;
+use App\RepositoryInterface\UserRepositoryInterface;
 use Exception;
 
 
 class UserController extends Controller
 {
-    public function __construct()
+    private $userRepository;
+    public function __construct(UserRepositoryInterface $userRepository)
     {
+        $this->userRepository = $userRepository;
         $this->middleware(['checkRole'])
             ->only('getAllUsers');
 
-        $this->middleware(['userHasPermissionOnGroup'])
+        $this->middleware(['userHasPermissionOnGroup', 'checkGroupType'])
             ->only('getGroupUsers');
     }
 
     public function getAllUsers()
     {
-        $users = User::all();
+        $users = $this->userRepository->all();
 
         return $this->successResponse(
             UserResource::collection($users),
@@ -31,16 +34,10 @@ class UserController extends Controller
 
     public function getGroupUsers($group_id)
     {
-        $group = $this->findByIdOrFail(Group::class, 'Group', $group_id);
+        $users = $this->userRepository->groupUsers($group_id);
 
-        if ($group->group_type == 'public') {
-            throw new Exception(
-                'This group contains by default all users',
-                403
-            );
-        }
         return $this->successResponse(
-            UserResource::collection($group->users),
+            UserResource::collection($users),
             'Users fetched successfully',
         );
     }

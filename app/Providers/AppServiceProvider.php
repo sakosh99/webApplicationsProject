@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('path.public', function () {
             return base_path() . '/public_html';
         });
+        
     }
 
     /**
@@ -40,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
     {
         DB::listen(function ($query) {
             $querySQL = $query->sql;
-            if (str_contains($querySQL, 'insert') || str_contains($querySQL, 'update') || str_contains($querySQL, 'delete')) {
+            if (str_contains($querySQL, 'insert') || str_contains($querySQL, 'create') || str_contains($querySQL, 'update') || str_contains($querySQL, 'delete')) {
                 File::append(
                     storage_path('logs/DB-LOG-' . Carbon::today()->toDateString() . '.log'),
                     '[' . Carbon::now()->format('Y-m-d H:i:s') . '] local.INFO: ' . $query->sql . ' {"bindings":[' . implode(', ', $query->bindings) . '],"time":' . $query->time . '}' . PHP_EOL
