@@ -10,17 +10,12 @@ use App\Http\Requests\files\UploadFileRequest;
 
 use App\Http\Requests\ReserveFileRequest;
 use App\Http\Resources\FileResource;
-use App\Models\File;
-use App\Models\Group;
-use Carbon\Carbon;
-use Exception;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use App\Repository\FileService;
+
 
 class FileController extends Controller
 {
-    public function __construct()
+    public function __construct(private FileService $fileService)
     {
         $this->middleware(['userHasPermissionOnGroup', 'fileNameConflict', 'checkMemoryUsage'])->only('upload');
 
@@ -52,26 +47,7 @@ class FileController extends Controller
 
     public function upload(UploadFileRequest $request)
     {
-        $group = $this->findByIdOrFail(Group::class, 'Group', request()->group_id);
-        DB::beginTransaction();
-        request()->transaction = true;
-
-        $path = $this->uploadFile(
-            $request->file,
-            $group->group_name . '/'
-        );
-
-        $file = File::create([
-            'file_name' => $request->file->getClientOriginalName(),
-            'file_path' => $path,
-            'status'    => 'free',
-            'publisher_id' => Auth::user()->id,
-            'group_id' => $group->id
-        ]);
-
-        FileReportController::createReport($file->id, 'create', $file->created_at);
-
-        DB::commit();
+        $this->fileService->upload($request);
 
         return $this->successResponse(
             null,
@@ -81,26 +57,7 @@ class FileController extends Controller
 
     public function moveFileToNewGroup(MoveFileRequest $request)
     {
-        $file = $this->findByIdOrFail(File::class, 'File', $request->file_id);
-        $group = $this->findByIdOrFail(Group::class, 'Group', $request->group_id);
-
-        DB::beginTransaction();
-        request()->transaction = true;
-
-        $newPath = $this->moveFile(
-            $file->file_path,
-            $file->file_name,
-            $group->group_name . '/'
-        );
-
-        $file->update([
-            'file_path' => $newPath,
-            'group_id'  => $group->id
-        ]);
-
-        FileReportController::createReport($file->id, 'move', $file->updated_at, $group->id);
-
-        DB::commit();
+        $this->fileService->move($request);
 
         return $this->successResponse(
             null,
@@ -110,29 +67,7 @@ class FileController extends Controller
 
     public function copyFileToNewGroup(CopyFileRequest $request)
     {
-        $file = $this->findByIdOrFail(File::class, 'File', $request->file_id);
-        $group = $this->findByIdOrFail(Group::class, 'Group', $request->group_id);
-
-        DB::beginTransaction();
-        request()->transaction = true;
-
-        $newPath = $this->copyFile(
-            $file->file_path,
-            $file->file_name,
-            $group->group_name . '/'
-        );
-
-        $newFile = File::create([
-            'file_name' => $file->file_name,
-            'file_path' => $newPath,
-            'status'    => 'free',
-            'publisher_id' => Auth::user()->id,
-            'group_id' => $group->id
-        ]);
-
-        FileReportController::createReport($file->id, 'copy', $newFile->created_at, $group->id);
-
-        DB::commit();
+        $this->fileService->copy($request);
 
         return $this->successResponse(
             null,
@@ -142,25 +77,7 @@ class FileController extends Controller
 
     public function editFile(EditFileRequest $request)
     {
-        $file = $this->findByIdOrFail(File::class, 'File', $request->file_id);
-
-        DB::beginTransaction();
-        request()->transaction = true;
-
-        $this->deleteFile($file->file_path);
-
-        $file_path = $this->uploadFile(
-            $request->file,
-            $file->group->group_name . '/'
-        );
-
-        $file->update([
-            'file_name' => $request->file->getClientOriginalName(),
-            'file_path' => $file_path
-        ]);
-
-        FileReportController::createReport($file->id, 'update', $file->updated_at);
-        DB::commit();
+        $this->fileService->edit($request);
 
         return $this->successResponse(
             null,
@@ -170,19 +87,7 @@ class FileController extends Controller
 
     public function renameFile(RenameFileRequest $request)
     {
-        $file = $this->findByIdOrFail(File::class, 'File', $request->file_id);
-
-        $oldName = $file->file_name;
-        DB::beginTransaction();
-        request()->transaction = true;
-
-        $file->update([
-            'file_name' => $request->file_name . '.' . $this->getFileExtension($file->file_path),
-        ]);
-
-        FileReportController::createReport($file->id, 'rename', $file->updated_at, null, $oldName, $file->file_name);
-
-        DB::commit();
+        $this->fileService->rename($request);
 
         return $this->successResponse(
             null,
@@ -192,33 +97,8 @@ class FileController extends Controller
 
     public function reserveFiles(ReserveFileRequest $request)
     {
-        $files = File::whereIn('id', $request->file_id)->get();
+        $message = $this->fileService->reserve($request);
 
-        DB::beginTransaction();
-        request()->transaction = true;
-
-
-        foreach ($files as $file) {
-            if ($file->status == 'reserved') {
-                throw new Exception(
-                    'Failed, One or more files are currently reserved, please try again later',
-                    403
-                );
-            }
-            $file->update([
-                'current_reserver_id' => Auth::user()->id,
-                'status' => 'reserved'
-            ]);
-            FileReportController::createReport($file->id, 'reserve', $file->updated_at);
-        }
-
-        $message = 'File reserved successfully';
-
-        if (count($files) > 1) {
-            $message = 'Files reserved successfully';
-        }
-
-        DB::commit();
         return $this->successResponse(
             null,
             $message,
@@ -227,20 +107,7 @@ class FileController extends Controller
 
     public function cancelReserveFile($file_id)
     {
-
-        $file = $this->findByIdOrFail(File::class, 'File', $file_id);
-
-        DB::beginTransaction();
-        request()->transaction = true;
-
-        $file->update([
-            'current_reserver_id' => null,
-            'status' => 'free'
-        ]);
-
-        FileReportController::createReport($file->id, 'cancel_reserve', $file->updated_at);
-
-        DB::commit();
+        $this->fileService->cancelReserve($file_id);
 
         return $this->successResponse(
             null,
@@ -250,14 +117,8 @@ class FileController extends Controller
 
     public function delete($file_id)
     {
-        $file = $this->findByIdOrFail(File::class, 'File', $file_id);
-        DB::beginTransaction();
-        request()->transaction = true;
+        $this->fileService->delete($file_id);
 
-        $this->deleteFile($file->file_path);
-        $file->delete();
-
-        DB::commit();
         return $this->successResponse(
             null,
             'File deleted successfully',
@@ -269,7 +130,7 @@ class FileController extends Controller
 
     public function getAllUserFiles()
     {
-        $files = File::where('publisher_id', Auth::user()->id)->get();
+        $files = $this->fileService->userFiles();
 
         return $this->successResponse(
             FileResource::collection($files),
@@ -279,19 +140,10 @@ class FileController extends Controller
 
     public function getGroupFiles($group_id)
     {
-        $group = Group::where('id', $group_id)->first();
-
-        $groupFiles = [];
-
-        if (Cache::has($group->group_name)) {
-            $groupFiles = Cache::get($group->group_name);
-        } else {
-            $groupFiles = $group->files;
-            Cache::add($group->group_name, $groupFiles, 60);
-        }
+        $files = $this->fileService->groupFiles($group_id);
 
         return $this->successResponse(
-            FileResource::collection($groupFiles),
+            FileResource::collection($files),
             'Files fetched successfully',
         );
     }

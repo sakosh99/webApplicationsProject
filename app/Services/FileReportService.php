@@ -3,10 +3,8 @@
 namespace App\Repository;
 
 use App\Http\Resources\FileReportsResource;
-use App\Models\User;
 use App\RepositoryInterface\FileReportRepositoryInterface;
 use App\RepositoryInterface\FileRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
 
 class FileReportService
 {

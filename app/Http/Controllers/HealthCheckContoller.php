@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Health;
+use App\Repository\HealthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Spatie\Health\Commands\RunHealthChecksCommand;
@@ -10,17 +11,13 @@ use Spatie\Health\Commands\RunHealthChecksCommand;
 
 class HealthCheckContoller extends Controller
 {
+    public function __construct(private HealthService $healthService)
+    {
+    }
 
     public function getHealthReports(Request $request)
     {
-        $reports = Health::all();
-
-        if ($request->has('fresh')) {
-            Artisan::call(RunHealthChecksCommand::class);
-
-            $lastBatch = Health::latest('created_at')->first();
-            $reports = Health::whereBatch($lastBatch->batch)->get();
-        }
+        $reports = $this->healthService->HealthReports($request);
 
         return $this->successResponse(
             $reports,

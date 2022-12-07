@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Models\Group;
 use App\Models\User;
-use App\RepositoryInterface\RepositoryInterface;
 use App\RepositoryInterface\UserRepositoryInterface;
 use App\Traits\ModelHelper;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +40,13 @@ class DBUserRepository implements UserRepositoryInterface
     public function find($user_id)
     {
         $user = $this->findByIdOrFail(User::class, 'User', $user_id);
+        return $user;
+    }
+    public function findByUserNameOrEmail($emailOrUserName)
+    {
+        $user = User::where('email', $emailOrUserName)
+            ->orWhere('user_name', $emailOrUserName)
+            ->first();
         return $user;
     }
 }

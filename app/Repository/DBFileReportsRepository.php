@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Models\File;
 use App\Models\FileReport;
-use App\Models\User;
 use App\RepositoryInterface\FileReportRepositoryInterface;
 use App\Traits\ModelHelper;
 use Illuminate\Support\Facades\Auth;

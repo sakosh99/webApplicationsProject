@@ -13,4 +13,5 @@ interface UserRepositoryInterface
     public function groupUsers(Group $group);
     public function authenticatedUserProfile();
     public function find($user_id);
+    public function findByUserNameOrEmail($user_id);
 }
