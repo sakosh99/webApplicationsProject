@@ -3,18 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
-use App\Models\Group;
-use App\Models\User;
-use App\RepositoryInterface\UserRepositoryInterface;
-use Exception;
 
+use App\Repository\UserService;
 
 class UserController extends Controller
 {
-    private $userRepository;
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(private UserService $userService)
     {
-        $this->userRepository = $userRepository;
         $this->middleware(['checkRole'])
             ->only('getAllUsers');
 
@@ -24,7 +19,7 @@ class UserController extends Controller
 
     public function getAllUsers()
     {
-        $users = $this->userRepository->all();
+        $users = $this->userService->getAllUsers();
 
         return $this->successResponse(
             UserResource::collection($users),
@@ -34,11 +29,20 @@ class UserController extends Controller
 
     public function getGroupUsers($group_id)
     {
-        $users = $this->userRepository->groupUsers($group_id);
+        $users = $this->userService->getGroupUsers($group_id);
 
         return $this->successResponse(
             UserResource::collection($users),
             'Users fetched successfully',
+        );
+    }
+
+    public function getUserProfile()
+    {
+        $profile = $this->userService->authenticatedUserProfile();
+        return $this->successResponse(
+            new UserResource($profile),
+            'Password changed successfully'
         );
     }
 }

@@ -5,44 +5,25 @@ namespace App\Http\Controllers;
 use App\Http\Requests\auth\ChangePasswordRequest;
 use App\Http\Requests\auth\LoginRequest;
 use App\Http\Requests\auth\RegisterRequest;
-use App\Http\Resources\UserResource;
-use App\Models\Group;
-use App\Models\User;
+use App\Repository\AuthService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public function __construct(private AuthService $authService)
+    {
+    }
+
     public function register(RegisterRequest $request)
     {
-        DB::beginTransaction();
-        request()->transaction = true;
-
-
-        $user = User::create(array_merge($request->validated(), [
-            'password' => Hash::make($request->password),
-            'role' => 'user',
-            'subscription_plan_id' => 1
-        ]));
-        // $user = User::create([
-        //     ...$request->validated(),
-        //     'password' => Hash::make($request->password),
-        //     'role' => 'user'
-        // ]);
-        Group::create([
-            'group_name' => $user->user_name,
-            'group_type' => 'private',
-            'publisher_id' => $user->id
-        ]);
-
-        DB::commit();
+        $user = $this->authService->register($request);
 
         $token = Auth::attempt([
-            'user_name' => $request->user_name,
-            'password' => $request->password
+            'user_name' => $user->user_name,
+            'password' => $user->password
         ]);
+
         return $this->successResponse(
             null,
             'Successfully registered',
@@ -77,25 +58,10 @@ class AuthController extends Controller
 
     public function changePassword(ChangePasswordRequest $request)
     {
-        $user = $this->findByIdOrFail(User::class, 'User', Auth::user()->id);
+        $this->authService->changePassword($request->validated());
 
-        DB::beginTransaction();
-        request()->transaction = true;
-
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        DB::commit();
         return $this->successResponse(
             null,
-            'Password changed successfully'
-        );
-    }
-
-    public function getUserProfile()
-    {
-        return $this->successResponse(
-            new UserResource(Auth::user()),
             'Password changed successfully'
         );
     }

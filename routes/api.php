@@ -30,15 +30,15 @@ Route::group(['prefix' => 'user', 'controller' => AuthController::class], functi
 Route::group(['middleware' => ['auth:api', 'apiLogging']], function () {
 
     Route::group(['prefix'  => 'admin', 'controller' => HealthCheckContoller::class], function () {
-        Route::get('/check-health','getHealthReports');
+        Route::get('/check-health', 'getHealthReports');
     });
 
     Route::group(['prefix' => 'user', 'controller' => AuthController::class], function () {
-        Route::get('/profile',  'getUserProfile');
         Route::post('/logout',  'logout');
         Route::post('/change-password',  'changePassword');
     });
     Route::group(['prefix' => 'user', 'controller' => UserController::class], function () {
+        Route::get('/profile',  'getUserProfile');
         Route::get('/all',  'getAllUsers');
         Route::get('/group-users/{group_id}',  'getGroupUsers')->name('groupUsers');
     });
