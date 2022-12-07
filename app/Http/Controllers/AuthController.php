@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\auth\ChangePasswordRequest;
 use App\Http\Requests\auth\LoginRequest;
 use App\Http\Requests\auth\RegisterRequest;
-use App\Repository\AuthService;
+use App\Services\AuthService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,8 +20,8 @@ class AuthController extends Controller
         $user = $this->authService->register($request);
 
         $token = Auth::attempt([
-            'user_name' => $user->user_name,
-            'password' => $user->password
+            'user_name' => $request->user_name,
+            'password' => $request->password
         ]);
 
         return $this->successResponse(

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Services;
 
 use App\Models\User;
 use App\RepositoryInterface\GroupRepositoryInterface;
@@ -47,7 +47,7 @@ class AuthService
 
         $this->userRepository->update(
             Auth::user()->id,
-            ['password' => Hash::make($validatedRequest->new_password)]
+            ['password' => Hash::make($validatedRequest['new_password'])]
         );
 
         DB::commit();
