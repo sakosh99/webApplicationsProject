@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\RepositoryInterface\GroupRepositoryInterface;
 use App\RepositoryInterface\UserRepositoryInterface;
 use Illuminate\Http\Request;

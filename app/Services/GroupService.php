@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Group;
-use App\Models\User;
 use App\RepositoryInterface\GroupRepositoryInterface;
 
 class GroupService
