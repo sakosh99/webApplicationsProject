@@ -44,8 +44,9 @@ class AuthService
         DB::beginTransaction();
         request()->transaction = true;
 
+        $user = $this->userRepository->find(Auth::user()->id);
         $this->userRepository->update(
-            Auth::user()->id,
+            $user,
             ['password' => Hash::make($validatedRequest['new_password'])]
         );
 

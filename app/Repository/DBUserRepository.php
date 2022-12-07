@@ -23,20 +23,24 @@ class DBUserRepository implements UserRepositoryInterface
         return User::create($attributes);
     }
 
-    public function update($user_id, $attributes)
+    public function update(User $user, $attributes)
     {
-        $user = $this->findByIdOrFail(User::class, 'User', $user_id);
         return $user->update($attributes);
     }
 
-    public function groupUsers($group_id)
+    public function groupUsers(Group $group)
     {
-        $group = $this->findByIdOrFail(Group::class, 'Group', $group_id);
         return $group->users;
     }
 
     public function authenticatedUserProfile()
     {
         return Auth::user();
+    }
+
+    public function find($user_id)
+    {
+        $user = $this->findByIdOrFail(User::class, 'User', $user_id);
+        return $user;
     }
 }
