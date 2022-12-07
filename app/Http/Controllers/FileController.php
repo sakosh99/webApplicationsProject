@@ -10,8 +10,7 @@ use App\Http\Requests\files\UploadFileRequest;
 
 use App\Http\Requests\ReserveFileRequest;
 use App\Http\Resources\FileResource;
-use App\Repository\FileService;
-
+use App\Services\FileService;
 
 class FileController extends Controller
 {

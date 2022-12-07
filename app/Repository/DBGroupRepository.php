@@ -35,10 +35,9 @@ class DBGroupRepository implements GroupRepositoryInterface
         $groups = Group::dynamicSearch($filter)->get();
         return $groups;
     }
-    public function groupsByUserId($user_id)
+    public function groupsByUserId($user)
     {
-        $groups = Group::where('publisher_id', $user_id)->get();
-        return $groups;
+        return $user->groups;
     }
     public function attachUser(User $user, Group $group)
     {

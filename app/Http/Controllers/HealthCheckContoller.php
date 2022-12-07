@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Health;
-use App\Repository\HealthService;
+use App\Services\HealthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
-use Spatie\Health\Commands\RunHealthChecksCommand;
+
 
 
 class HealthCheckContoller extends Controller

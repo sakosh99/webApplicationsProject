@@ -47,7 +47,7 @@ class GroupService
     public function deleteUser($validatedRequest)
     {
         $group = $this->groupRepository->find($validatedRequest['group_id']);
-        $user = $this->userRepository->findByUserNameOrEmail($validatedRequest['emailOrUserName']);
+        $user = $this->userRepository->find($validatedRequest['user_id']);
 
         DB::beginTransaction();
         request()->transaction = true;
@@ -87,12 +87,13 @@ class GroupService
     }
     public function userGroups($validatedRequest)
     {
-        $groups = $this->groupRepository->userGroups($$validatedRequest['filter']);
+        $groups = $this->groupRepository->userGroups($validatedRequest['filter']);
         return $groups;
     }
     public function GroupsByUserId($user_id)
     {
-        $groups = $this->groupRepository->groupsByUserId($user_id);
+        $user = $this->userRepository->find($user_id);
+        $groups = $this->groupRepository->groupsByUserId($user);
         return $groups;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Services;
 
 use App\Http\Resources\FileReportsResource;
 use App\RepositoryInterface\FileReportRepositoryInterface;

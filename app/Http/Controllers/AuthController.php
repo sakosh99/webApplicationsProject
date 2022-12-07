@@ -17,7 +17,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $user = $this->authService->register($request);
+        $this->authService->register($request);
 
         $token = Auth::attempt([
             'user_name' => $request->user_name,

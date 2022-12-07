@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Services;
 
 use App\RepositoryInterface\HealthRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Spatie\Health\Commands\RunHealthChecksCommand;
 
 class HealthService
 {

@@ -7,12 +7,8 @@ use App\Http\Requests\groups\CreateGroupRequest;
 use App\Http\Requests\groups\DeleteUserFromGroupRequest;
 use App\Http\Requests\groups\DynamicSearchRequest;
 use App\Http\Resources\GroupResource;
-use App\Models\Group;
-use App\Models\User;
-use App\RepositoryInterface\GroupRepositoryInterface;
 use App\Services\GroupService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+
 
 class GroupController extends Controller
 {
@@ -92,6 +88,7 @@ class GroupController extends Controller
     public function getUserGroups(DynamicSearchRequest $request)
     {
         $groups = $this->groupService->userGroups($request);
+        return $groups;
         return $this->successResponse(
             GroupResource::collection($groups),
             'Groups fetched successfully',

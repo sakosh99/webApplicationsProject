@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\FileReportsResource;
-use App\Models\File;
-use App\Models\FileReport;
-use App\Repository\FileReportService;
-use Illuminate\Support\Facades\Auth;
+use App\Services\FileReportService;
 
 class FileReportController extends Controller
 {

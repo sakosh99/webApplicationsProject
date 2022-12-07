@@ -12,6 +12,7 @@ class DBHealthRepository implements HealthRepositoryInterface
         $reports = Health::all();
         return $reports;
     }
+
     public function latest()
     {
         $lastBatch = Health::latest('created_at')->first();

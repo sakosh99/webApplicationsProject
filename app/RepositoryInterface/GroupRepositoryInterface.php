@@ -12,7 +12,7 @@ interface GroupRepositoryInterface
     public function find($group_id);
     public function delete(Group $group);
     public function userGroups($filter);
-    public function groupsByUserId($user_id);
+    public function groupsByUserId($user);
     public function attachUser(User $user, Group $group);
     public function detachUser(User $user, Group $group);
 }
