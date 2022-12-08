@@ -11,23 +11,23 @@ trait FileUploader
     public function uploadFile($file, $repository): string
     {
 
-        // $fileName = $this->fileName($file);
-
-        // $realPath = $repository . $fileName;
-
-        // Storage::disk('public')->put($realPath, File::get($file));
-
-        // $filePath   = 'storage/' . $realPath;
-
-        // return $filePath;
-
         $fileName = $this->fileName($file);
 
-        $file->move('storage/' . $repository, $fileName);
+        $realPath = $repository . $fileName;
 
-        $realPath = 'storage/' . $repository . $fileName;
+        Storage::disk('public')->put($realPath, File::get($file));
 
-        return $realPath;
+        $filePath   = 'storage/' . $realPath;
+
+        return $filePath;
+
+        // $fileName = $this->fileName($file);
+
+        // $file->move('storage/' . $repository, $fileName);
+
+        // $realPath = 'storage/' . $repository . $fileName;
+
+        // return $realPath;
     }
 
     protected function fileName($file): string
@@ -46,62 +46,62 @@ trait FileUploader
 
     protected function moveFile($oldFilePath, $oldFileName, $newPath): string
     {
-        // $file = File::get(public_path($oldFilePath));
-
-        // $fileName = Carbon::now()->format('Y_m_d_u') . '_' . $oldFileName;
-
-        // $realPath = $newPath . $fileName;
-
-        // Storage::disk('public')->put($realPath, $file);
-
-        // unlink(public_path($oldFilePath));
-
-        // $filePath   = 'storage/' . $realPath;
-
-        // return $filePath;
-
-        $realNewPath = 'storage/' . $newPath;
-
-        if (!File::exists(public_path($realNewPath))) {
-            File::makeDirectory(public_path($realNewPath), 0775, true);
-        }
+        $file = File::get(public_path($oldFilePath));
 
         $fileName = Carbon::now()->format('Y_m_d_u') . '_' . $oldFileName;
 
-        $fullPath = $realNewPath . $fileName;
+        $realPath = $newPath . $fileName;
 
-        File::move(public_path($oldFilePath), public_path($fullPath));
+        Storage::disk('public')->put($realPath, $file);
 
-        return $fullPath;
+        unlink(public_path($oldFilePath));
+
+        $filePath   = 'storage/' . $realPath;
+
+        return $filePath;
+
+        // $realNewPath = 'storage/' . $newPath;
+
+        // if (!File::exists(public_path($realNewPath))) {
+        //     File::makeDirectory(public_path($realNewPath), 0775, true);
+        // }
+
+        // $fileName = Carbon::now()->format('Y_m_d_u') . '_' . $oldFileName;
+
+        // $fullPath = $realNewPath . $fileName;
+
+        // File::move(public_path($oldFilePath), public_path($fullPath));
+
+        // return $fullPath;
     }
 
     protected function copyFile($oldFilePath, $oldFileName, $newPath): string
     {
-        // $file = File::get(public_path($oldFilePath));
+        $file = File::get(public_path($oldFilePath));
 
-        // $fileName = Carbon::now()->format('Y_m_d_u') . '_' . $oldFileName;
-
-        // $realPath = $newPath . $fileName;
-
-        // Storage::disk('public')->put($realPath, $file);
-
-        // $filePath   = 'storage/' . $realPath;
-
-        // return $filePath;
-
-
-        $realNewPath = 'storage/' . $newPath;
-
-        if (!File::exists(public_path($realNewPath))) {
-            File::makeDirectory(public_path($realNewPath), 0775, true);
-        }
         $fileName = Carbon::now()->format('Y_m_d_u') . '_' . $oldFileName;
 
-        $fullPath = $realNewPath . $fileName;
+        $realPath = $newPath . $fileName;
 
-        File::copy(public_path($oldFilePath), public_path($fullPath));
+        Storage::disk('public')->put($realPath, $file);
 
-        return $fullPath;
+        $filePath   = 'storage/' . $realPath;
+
+        return $filePath;
+
+
+        // $realNewPath = 'storage/' . $newPath;
+
+        // if (!File::exists(public_path($realNewPath))) {
+        //     File::makeDirectory(public_path($realNewPath), 0775, true);
+        // }
+        // $fileName = Carbon::now()->format('Y_m_d_u') . '_' . $oldFileName;
+
+        // $fullPath = $realNewPath . $fileName;
+
+        // File::copy(public_path($oldFilePath), public_path($fullPath));
+
+        // return $fullPath;
     }
 
     protected function getFileExtension($FilePath): string
