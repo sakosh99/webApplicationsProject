@@ -17,7 +17,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $this->authService->register($request);
+        $user = $this->authService->register($request);
 
         $token = Auth::attempt([
             'user_name' => $request->user_name,
@@ -25,7 +25,7 @@ class AuthController extends Controller
         ]);
 
         return $this->successResponse(
-            null,
+            ['role' => $user->role],
             'Successfully registered',
             200,
             $token
@@ -39,7 +39,7 @@ class AuthController extends Controller
         }
 
         return $this->successResponse(
-            null,
+            ['role' => Auth::user()->role],
             'Logged in successfully',
             200,
             $token

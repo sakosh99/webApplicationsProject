@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 
 class Controller extends BaseController
 {
@@ -20,10 +21,8 @@ class Controller extends BaseController
         ApiResponser,
         ModelHelper,
         FileUploader;
-    // public function test()
-    // {
-    //  $file= File::find(42);
-
-    //  $this->deleteFile($file->file_path);
-    // }
+    public function test()
+    {
+        return request()->url();
+    }
 }

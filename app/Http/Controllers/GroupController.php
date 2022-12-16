@@ -88,7 +88,7 @@ class GroupController extends Controller
     public function getUserGroups(DynamicSearchRequest $request)
     {
         $groups = $this->groupService->userGroups($request);
-        return $groups;
+
         return $this->successResponse(
             GroupResource::collection($groups),
             'Groups fetched successfully',

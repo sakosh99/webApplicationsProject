@@ -6,6 +6,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\FileReportController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HealthCheckContoller;
+use App\Http\Controllers\StorageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
@@ -31,6 +32,9 @@ Route::group(['middleware' => ['auth:api', 'apiLogging']], function () {
 
     Route::group(['prefix'  => 'admin', 'controller' => HealthCheckContoller::class], function () {
         Route::get('/check-health', 'getHealthReports');
+    });
+    Route::group(['prefix'  => 'storage', 'controller' => StorageController::class], function () {
+        Route::get('/getMemoryUsage', 'getMemoryUsage');
     });
 
     Route::group(['prefix' => 'user', 'controller' => AuthController::class], function () {
