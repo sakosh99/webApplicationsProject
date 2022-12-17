@@ -34,7 +34,7 @@ class DBFileRepository implements FileRepositoryInterface
     }
     public function findByMultiIDs($files_ids)
     {
-        $files = File::whereIn('id', $files_ids)->get();
+        $files = File::whereIn('id', $files_ids)->lockForUpdate()->get();
         return $files;
     }
     public function userFiles()
