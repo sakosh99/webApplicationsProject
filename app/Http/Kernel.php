@@ -81,5 +81,7 @@ class Kernel extends HttpKernel
         'cors' => \App\Http\Middleware\Cors::class,
         'apiLogging' => \App\Http\Middleware\ApiLogging::class,
         'checkMemoryUsage' => \App\Http\Middleware\CheckMemoryUsage::class,
+        'maxUploadFileSize' => \App\Http\Middleware\MaxUploadFileSize::class,
+
     ];
 }
